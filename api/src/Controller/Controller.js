@@ -85,9 +85,37 @@ const getById = async (id) => {
     }
 };
 
+const getGenres = async () => {
+    const promise = await axios ('https://api.rawg.io/api/genres?key=43ab0952436047b1a77b4a696628fd5a');
+    // console.log(promise)
+    const genres = promise.data.results.map((ele) => {
+        return {
+            id: ele.id,
+            name: ele.name,
+        }
+    });
+
+    const subirEnDB = genres.map((ele) => {
+        Genre.findOrCreate({
+            where:{ 
+                id: ele.id,
+                name: ele.name
+            }
+        });
+    });
+
+    const allGenres = await Genre.findAll({
+        attributes: ['name']
+    })
+
+    return allGenres
+
+};
+
 
 module.exports = {
     allInfo,
     getByGame,
     getById,
+    getGenres
 }

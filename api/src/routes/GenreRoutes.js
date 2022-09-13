@@ -1,13 +1,16 @@
 const { Router } = require ('express');
-
-// import all controllers
-// import SessionController from './app/controllers/SessionController';
+const { getGenres } = require ('../Controller/Controller.js')
 
 const routes = new Router();
 
 // Add routes
 routes.get('/', async (req, res) => {
-    res.status(200).send('Soy el get de genres')
+    try {
+        const response = await getGenres();
+        res.status(200).send(response)
+    } catch (error) {
+        console.log(error, 'Error en el Get Genre')
+    }
 });
 
 module.exports = routes;
