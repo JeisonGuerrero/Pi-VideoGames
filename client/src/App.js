@@ -1,10 +1,14 @@
-import './App.css';
+import { Routes, Route} from "react-router-dom";
+import Home from "./Pages/Home/Home";
+import Principal from "./Pages/Principal/Principal";
+
 
 function App() {
   return (
-    <div className="App">
-      <h1>Henry Videogames</h1>
-    </div>
+    <Routes>
+      <Route exact path="/" element={<Principal/>}/>
+      <Route exact path="/home" element={<Home/>}/>
+    </Routes>
   );
 }
 
