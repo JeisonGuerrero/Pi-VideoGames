@@ -6,7 +6,7 @@ export const getVideogame = () => {
             let rutaVideogames = await axios ('http://localhost:3001/videogames');
             return dispatch ({
                 type: 'GET_VIDEOGAMES',
-                payload: rutaVideogames.data
+                payload: rutaVideogames.data,   
             });
         } catch (error) {
             console.log("ERROR EN LA LLAMADA AL BACK A LA RUTA VIDEOGAMES ", error);
