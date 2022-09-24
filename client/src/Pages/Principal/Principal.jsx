@@ -4,12 +4,18 @@ import './Principal.css';
 
 function Principal() {
   return (
-    <div>
-        <div>
+    <div className='DivPadre'>
+        <div className='ContenedorMsg'>
+          <div className='Msg'>
             <h2 className='Mensaje'>Welcome to Video Games REST API!</h2>
+          </div>
+        </div>
+        <div className='ContenedorBttn'>
+          <div className='Bttn'>
             <Link to="/home">
-              <span className='Button'> Go! </span>
+              <h3 className='Button'> Press START! </h3>
             </Link>
+          </div>
         </div>
     </div>
   )
