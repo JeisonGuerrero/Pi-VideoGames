@@ -12,7 +12,7 @@ function Principal() {
         </div>
         <div className='ContenedorBttn'>
           <div className='Bttn'>
-            <Link to="/home">
+            <Link to="/home" className='Link'>
               <h3 className='Button'> Press START! </h3>
             </Link>
           </div>

@@ -19,7 +19,7 @@ function Home() {
   console.log(allVideogames, 'esto es all videogames')
 
   return (
-    <div>
+    <div className='DivPadreHome'>
       <h1>Esta es la Home</h1>
       <Cards videogames={allVideogames}/>
     </div>

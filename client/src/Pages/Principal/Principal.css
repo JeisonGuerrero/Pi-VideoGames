@@ -50,7 +50,6 @@
     font-size: 2rem;
     display: flex;
     justify-content: center;
-    text-decoration: none;
 }
 
 .Button:hover {
@@ -64,4 +63,8 @@
     -moz-border-radius: 200px 200px 200px 200px;
     -webkit-border-radius: 200px 200px 200px 200px;
     border: 0px none #ffffff;
+}
+
+.Link{
+    text-decoration: none;   
 }

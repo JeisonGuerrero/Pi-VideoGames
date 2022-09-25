@@ -1,13 +1,14 @@
 import React from 'react'
 import Card from '../Card/Card'
+import './Cards.css'
 
 function Cards({ videogames }) {
   return (
-    <div>
+    <div className='DivPadreCards'>
     {videogames.map((e) => {
         return (
             <div key={e.id}>
-                <Card
+                <Card 
                     name={e.name} 
                     image={e.image} 
                     genre={e.genre} 
