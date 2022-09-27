@@ -1,21 +1,23 @@
 import React from 'react';
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getVideogame, 
-        filtroGames, 
+import {filtroGames, 
         filtroGenres, 
         ordenAlfabetico, 
         ordenPorPuntaje,
-        busquedaPorNombre } from '../../Redux/Actions'
+        busquedaPorNombre,
+        getGenres, 
+        } from '../../Redux/Actions'
 import './Ordenamientos.css'
 
 function Ordenamientos({ setPaginaEnEsteMomento }) {
 
     const dispatch = useDispatch();
     const genres = useSelector((state) => state.genres);
+    console.log(genres, 'aca el vacio');
   
     useEffect(() => {
-      dispatch(getVideogame());
+      dispatch(getGenres());
     }, [dispatch]);
   
     //ARRANCO CON LAS FUNCIONES QUE MANIPULAN MIS EVENTOS

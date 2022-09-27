@@ -21,7 +21,7 @@ const infoApi = async () => {
                 rating: ele.rating,
                 plataforms: ele.platforms.map(s => s.platform.name),
                 image: ele.background_image,
-                genre: ele.genres.map(s => s.name),
+                genre: ele.genres.map((s) => {return {name: s.name} }),
                 description
             }
         }))

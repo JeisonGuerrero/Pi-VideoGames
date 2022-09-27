@@ -9,21 +9,19 @@ const initialState = {
 function reducer(state = initialState, { type, payload }) {
     switch (type) {
       case "GET_VIDEOGAMES":
-        console.log("aca esta pedido de videogames", payload);
         return {
           ...state,
           videogames: payload,
+          gameModificable: payload
         };
   
       case "GET_GENRES":
-        console.log("aca esta pedido generos", payload);
         return {
           ...state,
           genres: payload,
         };
   
       case "VIDEOGAMES_BY_ID":
-        console.log("aca esta videogames por Id", payload);
         return {
           ...state,
           unVideogame: payload,
@@ -36,31 +34,50 @@ function reducer(state = initialState, { type, payload }) {
       };
 
       case "FILTRO_GENRES":
-        console.log("aca esta filtro Genres ");
-        const listaGeneros = [...state.genres];
+        console.log("este es el case filtro genres");
+        const listaGeneros = [...state.videogames];
         let listaGn;
-
-        if (payload === "todos") {
+        if (payload === 'todos') {
           listaGn = listaGeneros;
-        } else {
-        console.log("aca esta el else");
-
-        const listaGenre = listaGeneros.filter(
-          (e) =>
-            e.videogames?.filter((e) => e.name === payload).length
-        );
-        console.log("esta es lista generos", listaGenre);
-        listaGn = listaGenre.length ? listaGenre : listaGeneros;
-
-        if (!listaGenre.length) {
-          alert("NO EXISTE LOS GAMES QUE BUSCA");
+        }else{
+          const aux = listaGeneros.filter( (e) => e.genre?.filter( (e) => e.name === payload).length)
+          listaGn = aux.length ? aux : listaGeneros;
+            if(!aux.length) {
+              alert("EFE")
+            }
         }
-      }
+        return {
+          ...state,
+          gameModificable: listaGn
+        }
+        
 
-      return {
-        ...state,
-        gameModificable: listaGn,
-      };
+      // case "FILTRO_GENRES":
+      //   const listaGeneros = [...state.videogames];
+      //   let listaGn;
+      //   console.log("aca esta filtro Genres ", listaGeneros);
+
+      //   if (payload === "todos") {
+      //     listaGn = listaGeneros;
+      //   } else {
+      //   console.log("aca esta el else");
+
+      //   const listaGenre = listaGeneros.filter(
+      //     (e) =>
+      //       e.genre?.map((e) => e.name === payload).length
+      //   );
+      //   console.log("esta es lista generos", listaGenre);
+      //   listaGn = listaGenre.length ? listaGenre : listaGeneros;
+
+      //   if (!listaGenre.length) {
+      //     alert("NO EXISTE LOS GAMES QUE BUSCA");
+      //   }
+      // }
+
+      // return {
+      //   ...state,
+      //   gameModificable: listaGn,
+      // };
 
     case "FILTRO_GAMES":
       const todosLosGames = [...state.videogames];
@@ -80,7 +97,7 @@ function reducer(state = initialState, { type, payload }) {
         console.log("Aqui esta filtro games", auxiliar)
 
         if (!auxiliar.length) {
-          alert("NO EXISTE NINGUN GENERO EN NUESTRA BASE DE DATOS");
+          alert("NO EXISTE NINGUN VIDEOJUEGO EN NUESTRA BASE DE DATOS");
         }
       }
       return {
@@ -89,10 +106,10 @@ function reducer(state = initialState, { type, payload }) {
       };
 
     case "ORDEN_ALFABETICO":
-      const listaDeRecetas = [...state.gameModificable];
+      const listaGames = [...state.gameModificable];
       let ordenados;
       if (payload === "Az") {
-        ordenados = listaDeRecetas.sort((elementoUno, elementoDos) => {
+        ordenados = listaGames.sort((elementoUno, elementoDos) => {
           if (
             elementoUno.name.toLowerCase() < elementoDos.name.toLowerCase()
           ) {
@@ -103,7 +120,7 @@ function reducer(state = initialState, { type, payload }) {
         });
       }
       if (payload === "Za") {
-        ordenados = listaDeRecetas.sort((elementoUno, elementoDos) => {
+        ordenados = listaGames.sort((elementoUno, elementoDos) => {
           if (
             elementoUno.name.toLowerCase() < elementoDos.name.toLowerCase()
           ) {

@@ -11,7 +11,7 @@ function Card({ image, name, genre, id }) {
         <div className='DivGenre'>
             <h3 className='Genres'>Generos:</h3>
             {
-        genre && genre.map((e, index) => <p classname= 'Gnr' key={index}>{e}</p>)
+        genre && genre.map((e, index) => <p className= 'Gnr' key={index}>{e.name}</p>)
         }
         </div>
         </Link>

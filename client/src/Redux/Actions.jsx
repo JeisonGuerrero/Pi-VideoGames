@@ -19,8 +19,8 @@ export const getGenres = () => {
         try {
             let rutaGenres = await axios ('http://localhost:3001/genres');
             return dispatch ({
-                type: 'GET_VIDEOGAMES',
-                payload: rutaGenres.data
+              type: 'GET_VIDEOGAMES',
+              payload: rutaGenres.data
             });
         } catch (error) {
             console.log("ERROR EN LA LLAMADA AL BACK A LA RUTA GENRES ", error);
