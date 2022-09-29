@@ -103,7 +103,7 @@ export const formularioDeCreacion = async (payload) => {
     try {
       console.log("ACA ESTA PAYLOAD FORMULARIO ", JSON.stringify(payload));
       let crearReceta = await axios.post(
-        "http://localhost:3001/creacion",
+        "http://localhost:3001/videogames",
         payload
       );
       return crearReceta;
