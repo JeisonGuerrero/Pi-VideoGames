@@ -28,7 +28,7 @@ function Detalle() {
             <h2>{unGame.name}</h2>
             <span className='span'>Generos:</span>
             <span >
-              {/* {unGame.genre.map((e) => { 
+              {/* {unGame.genre.filter((e) => { 
                 return (
               <p className= 'Gnr'>{e.name}</p>
               )}
