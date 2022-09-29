@@ -8,9 +8,9 @@ import {filtroGames,
         busquedaPorNombre,
         getGenres, 
         } from '../../Redux/Actions'
-import './Ordenamientos.css'
+import './Filtros.css'
 
-function Ordenamientos({ setPaginaEnEsteMomento }) {
+function Filtros({ setPaginaEnEsteMomento }) {
 
     const dispatch = useDispatch();
     const genres = useSelector((state) => state.genres);
@@ -123,4 +123,4 @@ function Ordenamientos({ setPaginaEnEsteMomento }) {
   )
 }
 
-export default Ordenamientos
+export default Filtros

@@ -4,9 +4,10 @@ export const getVideogame = () => {
     return async (dispatch) => {
         try {
             let rutaVideogames = await axios ('http://localhost:3001/videogames');
+            console.log("esto es rutaVideogames",rutaVideogames.data)
             return dispatch ({
-                type: 'GET_VIDEOGAMES',
-                payload: rutaVideogames.data,   
+              type: 'GET_VIDEOGAMES',
+              payload: rutaVideogames.data,   
             });
         } catch (error) {
             console.log("ERROR EN LA LLAMADA AL BACK A LA RUTA VIDEOGAMES ", error);
@@ -32,6 +33,7 @@ export function getByIdVideogames(id) {
     return async (dispatch) => {
       try {
         let rutaById = await axios(`http://localhost:3001/videogames/${id}`);
+        console.log('Esto es paylaod by id', rutaById.data)
         return dispatch({
           type: "VIDEOGAMES_BY_ID",
           payload: rutaById.data,

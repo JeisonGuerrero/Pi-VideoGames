@@ -5,7 +5,7 @@ import './Home.css'
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getVideogame } from '../../Redux/Actions';
-import Ordenamientos from '../../Components/Ordenamientos/Ordenamientos';
+import Filtros from '../../Components/Filtros/Filtros';
 import Paginado from '../../Components/Paginado/Paginado';
 
 function Home() {
@@ -26,7 +26,7 @@ function Home() {
   return (
     <div className='DivPadreHome'>
       <h1>Esta es la Home</h1>
-      <Ordenamientos setPaginaEnEsteMomento={setPaginaEnEsteMomento}/>
+      <Filtros setPaginaEnEsteMomento={setPaginaEnEsteMomento}/>
       <Paginado
         setPaginaEnEsteMomento={setPaginaEnEsteMomento}
         cantidadPorPagina={cantidadPorPagina}
