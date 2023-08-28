@@ -1,68 +1,14 @@
 const axios = require('axios');
-const { Videogame, Genre } = require('../db');
-
-const infoApi = async () => {
-    try {
-        const arr = [];
-        for (let i = 1; i < 6; i++) {
-         arr.push(i);
-        }
-        const response = arr.map((i)=> axios(`https://api.rawg.io/api/games?key=43ab0952436047b1a77b4a696628fd5a&page=${i}`));
-        const todo = await Promise.all(response)
-
-        const videogames = todo.map((e) =>
-            e.data.results.map(async ele => {
-            const infoId = await axios(`https://api.rawg.io/api/games/${ele.id}?key=43ab0952436047b1a77b4a696628fd5a&page_size=15`)
-            const description = infoId.data.description.replace(/<[^>]+>/ig, '');
-            return {
-                id: ele.id,
-                name: ele.name,
-                released: ele.released,
-                rating: ele.rating,
-                plataforms: ele.platforms.map(s => s.platform.name),
-                image: ele.background_image,
-                genre: ele.genres.map((s) => {return {name: s.name} }),
-                description
-            }
-        }))
-        const result = await Promise.all(videogames.flat())
-        return result
-    } catch (error) {
-        console.log(error, 'Error en el infoApi')
-    }
-};
-
-const dbInfo = async () => {
-    try {
-        const db = await Videogame.findAll({
-            includes: [{
-                model: Genre,
-                attributes: ['name']
-            }],
-            through: [{
-                attributes: []
-            }]
-        })
-        return db;
-    } catch (error) {
-        console.log(error, 'Error en la dbInfo')
-    }
-};
-
-const allInfo = async () => {
-    const apiInfo = await infoApi();
-    const infoDb = await dbInfo();
-    const infoAll = infoDb.concat(apiInfo);
-    
-    return infoAll;
-};
+const { Videogames, Genres } = require('../db');
+const { API_KEY } = process.env
 
 const getByGame = async (game) => {
     try {
-        const response = await axios(`https://api.rawg.io/api/games?search=${game}&key=43ab0952436047b1a77b4a696628fd5a&page_size=15`);
+        const response = await axios(`https://api.rawg.io/api/games?search=${game}&key=${API_KEY}&page_size=15`);
         const promesa = response.data.results.map(async ele => {
-            const infoId = await axios(`https://api.rawg.io/api/games/${ele.id}?key=43ab0952436047b1a77b4a696628fd5a`)
-            const description = infoId.data.description.replace(/<[^>]+>/ig, '');
+            const infoId = await axios(`https://api.rawg.io/api/games/${ele.id}?key=${API_KEY}`)
+            const descriptions = infoId.data.description.replace(/<[^>]+>/ig, '');
+            const description = descriptions.replace(/(\r\n|\n|\r)/gm, '');
             return {
                 id: ele.id,
                 name: ele.name,
@@ -70,7 +16,7 @@ const getByGame = async (game) => {
                 rating: ele.rating,
                 plataforms: ele.platforms.map(s => s.platform.name),
                 image: ele.background_image,
-                genre: ele.genres.map(s => s.name),
+                genres: ele.genres.map(s => s.name).toString(),
                 description
             }
         })
@@ -81,18 +27,8 @@ const getByGame = async (game) => {
     }
 };
 
-const getById = async (id) => {
-    try {
-        const resId = await allInfo();
-        const result = resId.find((ele)=> ele.id == id);
-        return result;
-    } catch (error) {
-        console.log(error, 'Error en GetById');
-    }
-};
-
 const getGenres = async () => {
-    const promise = await axios ('https://api.rawg.io/api/genres?key=43ab0952436047b1a77b4a696628fd5a');
+    const promise = await axios (`https://api.rawg.io/api/genres?key=${API_KEY}`);
     const genres = promise.data.results.map((ele) => {
         return {
             id: ele.id,
@@ -101,7 +37,7 @@ const getGenres = async () => {
     });
 
     const subirEnDB = genres.map((ele) => {
-        Genre.findOrCreate({
+        Genres.findOrCreate({
             where:{ 
                 id: ele.id,
                 name: ele.name
@@ -109,7 +45,7 @@ const getGenres = async () => {
         });
     });
 
-    const allGenres = await Genre.findAll({
+    const allGenres = await Genres.findAll({
         attributes: ['name']
     })
 
@@ -119,8 +55,6 @@ const getGenres = async () => {
 
 
 module.exports = {
-    allInfo,
     getByGame,
-    getById,
     getGenres
 }

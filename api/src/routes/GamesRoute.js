@@ -1,6 +1,6 @@
 const { Router } = require ('express');
-const { allInfo, getByGame, getById } = require ('../Controller/Controller.js')
-const { Videogame, Genre } = require('../db');
+const { getByGame } = require ('../Controller/Controller.js')
+const { Videogames, Genres } = require('../db');
 
 // import all controllers
 // import SessionController from './app/controllers/SessionController';
@@ -11,58 +11,103 @@ const routes = new Router();
 routes.get('/', async (req, res) => {
     try {
         const { name } = req.query;
-        if (name) {
-            const query = await getByGame(name);
-            query.length?
-            res.status(200).send(query):
-            res.status(404).send('Game not found');
-        }else{
-            const videogames = await allInfo();
-            res.status(200).send(videogames)
-        };
+        const videogames = await Videogames.findAll( {
+            include: [{
+                model: Genres,
+                attributes: ["name"],
+            }]
+        });
+
+        if ( !videogames.length && !name ) {
+            try {
+                const response = await getByGame();
+                const subirEnDb = await Videogames.bulkCreate( response );
+                res.status( 200 ).send( subirEnDb )
+            } catch (error) {
+                console.log( 'Error en primer condicional', error );    
+            }
+        }
+
+        if (name && videogames.length) {
+            try {
+                const game = await Videogames.findAll( { 
+                    where:{
+                        name: { [substing]: name }
+                    },
+                    include: [{
+                        model: Genres,
+                        attributes: ["name"],
+                        through: { attributes: [] }
+                    }]
+                });
+
+                game.length ? res.status( 200 ).send( game ) : res.status( 400 ).send( "Videogame not found" );
+
+            } catch (error) {
+                console.log( 'Error en segundo condicional' )
+            }
+        }
+
+        if (!name && videogames.length) {
+            try {
+                res.status( 200 ).send( videogames )                
+            } catch (error) {
+                console.log( 'Error en tercer condicional' )
+            }
+        }
+
     } catch (error) {
         console.log(error, 'Error en el Get videogames')
     }
 });
 
 routes.get('/:id', async (req, res) => {
-        const { id } = req.params;
-        const query = await getById(id);
-       if (query) {
-        res.status(200).send(query);
-       } else {
-        res.status(404).send(' Id Not Found');
-       }
+        
+    const { id } = req.params;
+
+    try {
+        const game = await Videogames.findByPk( id, 
+            {
+                include: [{
+                    model: Genres,
+                    attributes: ["name"],
+                    through: { attributes: [] }
+                }]
+            });
+         !game ? res.status( 404 ).send( "Id not found" ) : res.status( 200 ).send( game );
+    } catch (error) {
+        console.log( 'Error en getById', error);
+    }
+
 });
 
 routes.post('/', async (req, res) => {
     try {
         const {
-            id,
             name,
             released,
             rating,
             plataforms,
             image,
-            genre,
+            genres,
             description
         } = req.body;
-        const newGame = await Videogame.create({
-            id, 
+        const newGame = await Videogames.create({
             name, 
             released,
             rating,
             plataforms, 
             image,
-            description
+            genres,
+            description,
         });
-        const newGenre = await Genre.findAll({
-            where: { name: genre }
+        const newGenre = await Genres.findAll({
+            where: { name: genres }
         })
     
-        await newGame.addGenre(newGenre);
+        await newGame.addGenres(newGenre);
     
-        res.status(200).send('Your Videogame has been created successfully');
+        res.status(200).send(newGame);
     } catch (error) {
         console.log(error);
     }
