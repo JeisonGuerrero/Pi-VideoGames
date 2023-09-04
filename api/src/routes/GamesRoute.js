@@ -15,7 +15,7 @@ routes.get('/', async (req, res) => {
             const gamesByNameDB = await infoDB()
             let foundGamesDB =  gamesByNameDB.filter(el => el.name.toLowerCase().includes(name.toLowerCase()))
             let allResults = foundGamesDB.concat(foundGamesAPI)
-            allResults.length ? res.status(200).send(allResults.slice(0,15)) : res.status(400).send('No hay un videojuego con dicho nombre')
+            allResults.length ? res.status(200).send(allResults.slice(0,15)) : res.status(400).send('Videogame not found')
 
         } catch(err) {
             next(err)
