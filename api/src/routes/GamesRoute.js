@@ -1,5 +1,5 @@
 const { Router } = require ('express');
-const { getVideogames, infoDB, getByName } = require ('../Controller/Controller.js')
+const { getVideogames, infoDB, getByName, videogameId } = require ('../Controller/Controller.js')
 const { Videogames, Genres } = require('../db.js');
 
 const routes = new Router();
@@ -31,18 +31,14 @@ routes.get('/:id', async (req, res) => {
         
     const { id } = req.params;
 
+    let data = await videogameId(id)
+
     try {
-        const game = await Videogames.findByPk( id, 
-            {
-                include: [{
-                    model: Genres,
-                    attributes: ["name"],
-                    through: { attributes: [] }
-                }]
-            });
-         !game ? res.status( 404 ).send( "Id not found" ) : res.status( 200 ).send( game );
-    } catch (error) {
-        console.log( 'Error en getById', error);
+        //const getById = await data.(i => i.id == idVideogame)
+        data ? res.send(data) : res.status(404).send('El id ingresado no coincide con un videojuego en particular')
+
+    } catch(e) {
+        next(e)
     }
 
 });

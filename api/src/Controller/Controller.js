@@ -19,7 +19,7 @@ const infoApi = async() => {
                     genres: v.genres?.map(el => el.name),
                 })
             });
-            //y next que es donde voy a entrar para pasar a la siguente pagina.
+          
             url = info.data.next
         }
         return videojuegos
@@ -29,10 +29,10 @@ const infoApi = async() => {
     }
 };
 
-//A MI DB
+
 const infoDB = async () => {
     try {
-        return await Videogames.findAll({ //SELECT * FROM Videogame 
+        return await Videogames.findAll({ 
             include: [{
                 model: Genres, 
                 atributes: ['name'], 
@@ -46,12 +46,12 @@ const infoDB = async () => {
     }
 }
 
-//UNO MIS DOS SOLICITUDES
+
 const getVideogames = async () => {
-    //para unir mis dos solicitudes, guardo en una variable la ejecucion de mis funciones
+    
     const apiData = await infoApi();
     const dbData = await infoDB();
-    //ahora uno mis dos constantes contenedoras de funciones
+   
     const infoCompleta = dbData.concat(apiData)
     return infoCompleta
 }
@@ -80,6 +80,64 @@ const getByName = async (name) => {
         console.log(error, 'Error en Get By Name');
     }
 };
+
+const idApi = async (id) => {
+    try {
+        const infoApi = await axios.get(`https://api.rawg.io/api/games/${id}?key=${API_KEY}`)
+        const descriptions = infoApi.data.description.replace(/<[^>]+>/ig, '');
+        const description = descriptions.replace(/(\r\n|\n|\r)/gm, '');
+        if(infoApi) {
+            const ele = await infoApi.data
+            const info = {
+                id: ele.id,
+                name: ele.name,
+                image: ele.background_image,
+                genres: ele.genres?.map(g => g.name),
+                description,
+                released: ele.released,
+                rating: ele.rating,
+                platforms: ele.platforms?.map(el => el.platform.name)
+
+            }
+            return info
+        } else {
+            return("No hay un videojuego con ese id")
+        }
+
+    } catch(e) {
+        console.error(e)
+    }
+}
+
+//A MI DB
+const idDb = async (id) => {
+    try {
+    return await Videogames.findByPk(id, {
+        include: [{
+            model: Genres, 
+            atributes: ['name'], 
+            throught: { 
+                attributes: [] 
+            }
+        }]
+       })
+    } catch(e) {
+        console.error(e)
+    }
+}
+
+//UNO MIS DOS SOLICITUDES
+const videogameId = async (id) => {
+    const dbID = id.includes("-")
+    if(dbID) { 
+        const gameDb = await idDb(id);
+        return gameDb     
+    } else {
+        const gameApi = await idApi(id);
+        return gameApi
+   }
+}
+
 
 const getGenres = async () => {
     const promise = await axios (`https://api.rawg.io/api/genres?key=${API_KEY}`);
@@ -110,6 +168,7 @@ const getGenres = async () => {
 
 module.exports = {
     getByName,
+    videogameId,
     getGenres,
     getVideogames,
     infoDB
