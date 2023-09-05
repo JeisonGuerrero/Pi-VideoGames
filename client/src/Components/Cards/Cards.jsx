@@ -7,11 +7,11 @@ function Cards({ videogames }) {
     <div className='DivPadreCards'>
     {videogames.map((e) => {
         return (
-            <div key={e.id}>
+          <div key={e.id}>
                 <Card 
                     name={e.name} 
                     image={e.image} 
-                    genre={e.genre} 
+                    genres={e.genres}  
                     id={e.id}
                 />
             </div>

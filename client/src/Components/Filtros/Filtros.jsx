@@ -13,8 +13,7 @@ import './Filtros.css'
 function Filtros({ setPaginaEnEsteMomento }) {
 
     const dispatch = useDispatch();
-    const genres = useSelector((state) => state.genres);
-    console.log(genres, 'aca el vacio');
+    const genres =   useSelector((state) => state.genres);
   
     useEffect(() => {
       dispatch(getGenres());
@@ -69,7 +68,7 @@ function Filtros({ setPaginaEnEsteMomento }) {
       onChange={(e) => filterGenre(e)}
       name="Generos"
     >
-      <option value="todos">TODOS LOS GENEROS</option>
+      <option value='todos'>TODOS LOS GENEROS</option>
       {genres && genres.map((e, index) => {
           return (
             <option key={index} value={e.name}>

@@ -10,7 +10,7 @@ function Detalle() {
     console.log("aca esta id ", id);
 
     const unGame = useSelector((state) => state.unVideogame);
-    console.log("aca esta unGame ", unGame.genre);
+    console.log("aca esta unGame ", unGame);
     const dispatch = useDispatch();
     
   useEffect(() => {
@@ -24,27 +24,22 @@ function Detalle() {
         <div className='contenedor'>
           <div className='contenedorDetalle'>
             <img className='img' src={unGame.image} alt={unGame.name} />
-            <span className='span'>Nombre:</span>
             <h2>{unGame.name}</h2>
-            <span className='span'>Generos:</span>
+            <h3 className='span'>Generos:</h3>
             <span >
-              {/* {unGame.genre.filter((e) => { 
-                return (
-              <p className= 'Gnr'>{e.name}</p>
-              )}
-              )} */}
+              {unGame.genres?.map((e) => <p className= 'Gnr'>{e} </p>)}
 
             </span>
-            <span className='span'>Descripción:</span>
+            <h3 className='span'>Descripción:</h3>
             <p>{unGame.description}</p>
-            <span className='span'>Fecha de lanzamiento:</span>
+            <h3 className='span'>Fecha de lanzamiento:</h3>
             <p>{unGame.released}</p>
-            <span className='span'>Rating:</span>
+            <h3 className='span'>Rating:</h3>
             <p>{unGame.rating}</p>
-            <span className='span'>Plataformas:</span>
-            {/* <p>{unGame.platform.map((e) => 
-              <p className= 'Gnr'>{e}</p>
-              )}</p> */}
+            <h3 className='span'>Plataformas:</h3>
+            <p>{unGame.platforms?.map((e) => 
+              <p className= 'Gnr'>{e} </p>
+              )}</p>
           </div>
         </div>
     </div>

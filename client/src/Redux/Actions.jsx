@@ -4,7 +4,6 @@ export const getVideogame = () => {
     return async (dispatch) => {
         try {
             let rutaVideogames = await axios ('http://localhost:3001/videogames');
-            console.log("esto es rutaVideogames",rutaVideogames.data)
             return dispatch ({
               type: 'GET_VIDEOGAMES',
               payload: rutaVideogames.data,   
@@ -20,7 +19,7 @@ export const getGenres = () => {
         try {
             let rutaGenres = await axios ('http://localhost:3001/genres');
             return dispatch ({
-              type: 'GET_VIDEOGAMES',
+              type: 'GET_GENRES',
               payload: rutaGenres.data
             });
         } catch (error) {
@@ -33,7 +32,6 @@ export function getByIdVideogames(id) {
     return async (dispatch) => {
       try {
         let rutaById = await axios(`http://localhost:3001/videogames/${id}`);
-        console.log('Esto es paylaod by id', rutaById.data)
         return dispatch({
           type: "VIDEOGAMES_BY_ID",
           payload: rutaById.data,
@@ -102,11 +100,11 @@ export const busquedaPorNombre = (nombre) => {
 export const formularioDeCreacion = async (payload) => {
     try {
       console.log("ACA ESTA PAYLOAD FORMULARIO ", JSON.stringify(payload));
-      let crearReceta = await axios.post(
+      let crearGame = await axios.post(
         "http://localhost:3001/videogames",
         payload
       );
-      return crearReceta;
+      return crearGame;
     } catch (error) {
       console.log("ERROR EN LA RUTA DE CREACION ", error);
     }

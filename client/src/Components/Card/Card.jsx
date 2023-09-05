@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import './Card.css';
 
-function Card({ image, name, genre, id }) {
+function Card({ image, name, genres, id }) {
   return (
     <div className='DivPadreCard'>
         <Link to={`/detalle/${id}`} className='link'>
@@ -11,8 +11,8 @@ function Card({ image, name, genre, id }) {
         <div className='DivGenre'>
             <h3 className='Genres'>Generos:</h3>
             {
-        genre && genre.map((e, index) => <p className= 'Gnr' key={index}>{e.name}</p>)
-        }
+              genres && genres.map((e, index) => <p className= 'Gnr' key={index}>{e} </p>)
+            }
         </div>
         </Link>
     </div>

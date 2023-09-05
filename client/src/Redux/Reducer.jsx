@@ -34,16 +34,15 @@ function reducer(state = initialState, { type, payload }) {
       };
 
       case "FILTRO_GENRES":
-        console.log("este es el case filtro genres");
-        const listaGeneros = [...state.videogames];
+        const listaVideoGames = [...state.videogames];
         let listaGn;
         if (payload === 'todos') {
-          listaGn = listaGeneros;
+          listaGn = listaVideoGames;
         }else{
-          const aux = listaGeneros.filter( (e) => e.genre?.filter( (e) => e.name === payload).length)
-          listaGn = aux.length ? aux : listaGeneros;
+          const aux = listaVideoGames.filter( (e) => e.genres?.filter( (e) => e === payload).length)
+          listaGn = aux.length ? aux : listaVideoGames;
             if(!aux.length) {
-              alert("EFE")
+              alert("No existen juegos con este genero")
             }
         }
         return {
@@ -51,34 +50,6 @@ function reducer(state = initialState, { type, payload }) {
           gameModificable: listaGn
         }
         
-
-      // case "FILTRO_GENRES":
-      //   const listaGeneros = [...state.videogames];
-      //   let listaGn;
-      //   console.log("aca esta filtro Genres ", listaGeneros);
-
-      //   if (payload === "todos") {
-      //     listaGn = listaGeneros;
-      //   } else {
-      //   console.log("aca esta el else");
-
-      //   const listaGenre = listaGeneros.filter(
-      //     (e) =>
-      //       e.genre?.map((e) => e.name === payload).length
-      //   );
-      //   console.log("esta es lista generos", listaGenre);
-      //   listaGn = listaGenre.length ? listaGenre : listaGeneros;
-
-      //   if (!listaGenre.length) {
-      //     alert("NO EXISTE LOS GAMES QUE BUSCA");
-      //   }
-      // }
-
-      // return {
-      //   ...state,
-      //   gameModificable: listaGn,
-      // };
-
     case "FILTRO_GAMES":
       const todosLosGames = [...state.videogames];
       let filtrados;
