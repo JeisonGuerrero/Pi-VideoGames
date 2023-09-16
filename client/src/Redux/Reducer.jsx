@@ -12,7 +12,7 @@ function reducer(state = initialState, { type, payload }) {
         return {
           ...state,
           videogames: payload,
-          gameModificable: payload
+          gameModificable: payload,
         };
   
       case "GET_GENRES":
@@ -36,7 +36,7 @@ function reducer(state = initialState, { type, payload }) {
       case "FILTRO_GENRES":
         const listaVideoGames = [...state.videogames];
         let listaGn;
-        if (payload === 'todos') {
+        if (payload === 'Todos') {
           listaGn = listaVideoGames;
         }else{
           const aux = listaVideoGames.filter( (e) => e.genres?.filter( (e) => e === payload).length)
@@ -47,38 +47,42 @@ function reducer(state = initialState, { type, payload }) {
         }
         return {
           ...state,
-          gameModificable: listaGn
+          videogames: listaGn
         }
         
     case "FILTRO_GAMES":
       const todosLosGames = [...state.videogames];
       let filtrados;
-      if (payload === "todos") {
+      if (payload === "Todos") {
         filtrados = todosLosGames;
       } else {
         const auxiliar =
-          payload === "guardadosEnLaDb"
+          payload === "origenDb"
             ? todosLosGames.filter(
-                (game) => game.id.toString().length > 10
+                (game) => game.id.toString().length < 3
               )
-            : todosLosGames.filter(
-                (game) => game.id.toString().length < 10
-              );
+            : payload === "origenApi" 
+          ? todosLosGames.filter(
+            (game) => game.id.toString().length > 3)
+        : todosLosGames;
         filtrados = auxiliar.length ? auxiliar : todosLosGames;
         console.log("Aqui esta filtro games", auxiliar)
 
         if (!auxiliar.length) {
-          alert("NO EXISTE NINGUN VIDEOJUEGO EN NUESTRA BASE DE DATOS");
+          alert("Videogames not found's");
         }
       }
       return {
         ...state,
-        gameModificable: filtrados,
+        videogames: filtrados,
       };
 
     case "ORDEN_ALFABETICO":
-      const listaGames = [...state.gameModificable];
+      const listaGames = [...state.videogames];
       let ordenados;
+      if (payload === "Todos") {
+        ordenados = listaGames;
+      }
       if (payload === "Az") {
         ordenados = listaGames.sort((elementoUno, elementoDos) => {
           if (
@@ -103,11 +107,11 @@ function reducer(state = initialState, { type, payload }) {
       }
       return {
         ...state,
-        gameModificable: ordenados,
+        videogames: ordenados,
       };
 
     case "ORDEN_PUNTAJE":
-      let puntaje = [...state.gameModificable];
+      let puntaje = [...state.videogames];
       if (payload === "puntajeMinimo") {
         puntaje.sort((puntaje1, puntaje2) => {
           if (
@@ -121,28 +125,28 @@ function reducer(state = initialState, { type, payload }) {
       }
       if (payload === "puntajeMaximo") {
         puntaje.sort((puntaje1, puntaje2) => {
-          if (Number(puntaje1.rating) < Number(puntaje2)) {
-            return 1;
-          } else {
+          if (Number(puntaje1.rating) > Number(puntaje2.rating)) {
             return -1;
+          } else {
+            return 1;
           }
         });
       }
       return {
         ...state,
-        gameModificable: puntaje,
+        videogames: puntaje,
       };
 
     case "BUSQUEDA_POR_NOMBRE":
       console.log("ACA ESTA PAYLOAD ", payload);
       if (!payload) {
-        return alert("NO SE ENCUENTRA UNA RECETA CON ESE NOMBRE");
+        return alert("NO SE ENCUENTRA EL VIDEOJUEGO CON ESE NOMBRE");
       } else {
         console.log("ENCONTRE ALGO ", payload);
         return {
           ...state,
-          gameModificable: payload,
-        };
+          videogames: payload,
+        }; 
       }
 
     case "VIDEOGAME_CREADO":

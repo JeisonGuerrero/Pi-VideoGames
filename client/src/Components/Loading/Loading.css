@@ -1,0 +1,24 @@
+.divPadre{
+    height: 100vh;
+    width: 100%;
+    background-color:black;
+    display: flex;
+    justify-content: center;
+
+}
+
+.divHijo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+}
+
+.Gif{
+    height: 90%;
+    width: 70%;
+}
+
+.Text{
+    color: white;
+}

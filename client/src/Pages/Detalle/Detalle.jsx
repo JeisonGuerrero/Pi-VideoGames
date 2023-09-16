@@ -1,13 +1,12 @@
 import React from 'react';
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { getByIdVideogames, desmontarGame } from '../../Redux/Actions';
 import './Detalle.css';
 
 function Detalle() {
     const { id } = useParams();
-    console.log("aca esta id ", id);
 
     const unGame = useSelector((state) => state.unVideogame);
     console.log("aca esta unGame ", unGame);
@@ -40,6 +39,9 @@ function Detalle() {
             <p>{unGame.platforms?.map((e) => 
               <p className= 'Gnr'>{e} </p>
               )}</p>
+            <Link to='/home'>
+              <button className="Btn-Back"> Volver </button>
+            </Link>
           </div>
         </div>
     </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {filtroGames, 
@@ -6,7 +7,8 @@ import {filtroGames,
         ordenAlfabetico, 
         ordenPorPuntaje,
         busquedaPorNombre,
-        getGenres, 
+        getGenres,
+        getVideogame, 
         } from '../../Redux/Actions'
 import './Filtros.css'
 
@@ -24,27 +26,45 @@ function Filtros({ setPaginaEnEsteMomento }) {
     //FILTRO POR VIDEOGAMES:
     const filterGame = (e) => {
       let valor = e.target.value;
-      dispatch(filtroGames(valor));
-      setPaginaEnEsteMomento(1);
+      if (valor === 'Todos') {
+        dispatch(getVideogame());
+      } else {
+        dispatch(filtroGames(valor));
+        setPaginaEnEsteMomento(1);
+      }
     };
   
     //FILTRO POR GENRE:
     const filterGenre = (e) => {
       let valor = e.target.value;
-      dispatch(filtroGenres(valor));
-      setPaginaEnEsteMomento(1);
+      if (valor === 'Todos') {
+        dispatch(getVideogame());
+      } else {
+        dispatch(filtroGenres(valor));
+        setPaginaEnEsteMomento(1);
+      }
     };
   
     //ORDEN ALFABETICO:
     const cambiarOrdenAlfa = (e) => {
       let valor = e.target.value;
-      dispatch(ordenAlfabetico(valor));
+      if (valor === 'Todos') {
+        dispatch(getVideogame());
+      } else {
+        dispatch(ordenAlfabetico(valor));
+        setPaginaEnEsteMomento(1);
+      }
     };
   
     //ORDEN POR PUNTAJE:
     const cambiarPuntaje = (e) => {
       let valor = e.target.value;
-      dispatch(ordenPorPuntaje(valor));
+      if (valor === 'Todos') {
+        dispatch(getVideogame());
+      } else {
+        dispatch(ordenPorPuntaje(valor));
+        setPaginaEnEsteMomento(1)
+      }
     };
   
     //BUSCADOR POR NOMBRE:
@@ -68,7 +88,7 @@ function Filtros({ setPaginaEnEsteMomento }) {
       onChange={(e) => filterGenre(e)}
       name="Generos"
     >
-      <option value='todos'>TODOS LOS GENEROS</option>
+      <option value='Todos'>Todos</option>
       {genres && genres.map((e, index) => {
           return (
             <option key={index} value={e.name}>
@@ -83,11 +103,11 @@ function Filtros({ setPaginaEnEsteMomento }) {
       onChange={(e) => filterGame(e)}
       name="Videogame"
     >
-      <option value="todos">TODOS LOS VIDEOJUEGOS</option>
-      <option value="guardadosEnLaDb">
+      <option value="Todos">Todos</option>
+      <option value="origenDb">
         Filtrar por Origen Base de Datos
       </option>
-      <option value="ExistenteEnApi">Filtrar por Origen Api</option>
+      <option value="origenApi">Filtrar por Origen Api</option>
     </select>
 
     <select
@@ -95,6 +115,7 @@ function Filtros({ setPaginaEnEsteMomento }) {
       onChange={(e) => cambiarOrdenAlfa(e)}
       name="OrdenAlfabetico"
     >
+      <option value="Todos">Todos</option>
       <option value="Az">Orden de la "A" a la "Z"</option>
       <option value="Za">Orden de la "Z" a la "A"</option>
     </select>
@@ -104,8 +125,9 @@ function Filtros({ setPaginaEnEsteMomento }) {
       onChange={(e) => cambiarPuntaje(e)}
       name="OrdenPuntaje"
     >
-      <option value="puntajeMinimo">Orden por Puntaje Minimo</option>
-      <option value="puntajeMaximo">Orden por Puntaje Maximo</option>
+      <option value="Todos">Todos</option>
+      <option value="puntajeMinimo">Orden por Rating Minimo</option>
+      <option value="puntajeMaximo">Orden por Rating Maximo</option>
     </select>
 
     <form onSubmit={(e) => onSubmitPorNombre(e)}>
@@ -118,6 +140,10 @@ function Filtros({ setPaginaEnEsteMomento }) {
       />
       <input className='buscador' type="submit" value="Buscar" />
     </form>
+
+    <Link to='/create'>
+      <button className='btn'>Create Game</button>
+    </Link>
   </div>
   )
 }

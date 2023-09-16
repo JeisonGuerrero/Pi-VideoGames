@@ -3,20 +3,19 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getGenres,
-  getVideogames,
+  getVideogame,
   formularioDeCreacion,
 } from "../../Redux/Actions";
 import { Link, useNavigate } from "react-router-dom";
 
 function Create() {
     const dispatch = useDispatch();
-    const gen = useSelector((state) => state.genres);
     const games = useSelector((state) => state.videogames);
     const [validador, setValidador] = useState({});
     const [creacion, setCreacion] = useState("inicial");
     
   useEffect(() => {
-    dispatch(getVideogames());
+    dispatch(getVideogame());
     dispatch(getGenres());
   }, [dispatch]);
 
@@ -36,7 +35,6 @@ function Create() {
   const [nuevoGame, setNuevoGame] = useState({
     nombre: "",
     descripcion: "",
-    fechaDeLanzamiento: "",
     rating: 0,
     imagen: "",
     generos: [],
@@ -78,7 +76,7 @@ function Create() {
     console.log("aca esta Nuevo Game ", nuevoGame.genre);
   };
 
-  const eliminarDietas = (e) => {
+  const eliminarGeneros = (e) => {
     const seleccion = nuevoGame.generos.filter(
       (elemento) => elemento !== e.target.innerHTML
     );

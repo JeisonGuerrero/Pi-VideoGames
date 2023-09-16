@@ -5,11 +5,11 @@ import { getVideogame } from "../../Redux/Actions";
 import './Paginado.css';
 
 function Paginado({ setPaginaEnEsteMomento, cantidadPorPagina, paginaEnEsteMomento }) {
-    const games = useSelector((state) => state.gameModificable);
+    const games = useSelector((state) => state.videogames);
  
     const dispatch = useDispatch();
     useEffect(() => {
-      dispatch(getVideogame);
+      dispatch(getVideogame());
     }, [dispatch]);
   
    

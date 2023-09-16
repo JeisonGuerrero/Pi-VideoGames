@@ -13,10 +13,11 @@ function Cards({ videogames }) {
                     image={e.image} 
                     genres={e.genres}  
                     id={e.id}
-                />
+                    rating={e.rating}
+                    />
             </div>
         )})
-    }
+      }
     </div>
   )
 }
