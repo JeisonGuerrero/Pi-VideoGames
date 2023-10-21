@@ -1,187 +1,268 @@
-import React from 'react';
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getGenres,
-  getVideogame,
-  formularioDeCreacion,
-} from "../../Redux/Actions";
-import { Link, useNavigate } from "react-router-dom";
+import {React, useEffect, useState} from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import { getGenres, getPlatforms, getVideogame, formularioDeCreacion } from '../../Redux/Actions'
+
+function validate (input) {
+  let errors = {}
+
+  if(!input.name) {
+    errors.name = 'El nombre es requerido'
+  } else if(!/^[a-zA-Z0-9-() .]+$/.test(input.name)){
+    errors.name = 'Solo se aceptan letras, numeros, guiones medios y parentesis'
+  }
+
+  if(input.image.length !== 0 && !/^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/.test(input.image)){
+    errors.image='invalid URL'
+  }
+
+  if(!input.description) {
+    errors.description = 'La descripcion es requerida'
+  } else if (input.description.length > 100) {
+    errors.description = 'La descripcion es muy larga. (Max = 100 caracteres)'
+  }
+
+  if(!input.released) {
+    errors.released = 'La fecha de lanzamiento es requerida'
+  }
+
+  if(!input.rating) {
+    errors.rating = 'El rating es requerido'
+  } else if(input.rating > 5) {
+    errors.rating = 'El rating no debe ser mayor a 5'
+  } else if(input.rating < 0) {
+    errors.rating = 'El rating no puede ser un numero negativo'
+  }
+
+  return errors //la funcion validate devuelve el objeto errors, ya sea vacio o con alguna propiedad si es q encuentra un error
+}
 
 function Create() {
-    const dispatch = useDispatch();
-    const games = useSelector((state) => state.videogames);
-    const [validador, setValidador] = useState({});
-    const [creacion, setCreacion] = useState("inicial");
-    
-  useEffect(() => {
-    dispatch(getVideogame());
-    dispatch(getGenres());
-  }, [dispatch]);
 
-  const navegacionAutomatica = useNavigate();
-  useEffect(() => {
-    if (creacion === "creada") {
-      alert("SE CREO LA NUEVA RECETA");
-      setTimeout(() => {
-        navegacionAutomatica("/home");
-      });
-    }
-    if (creacion === "noCreada") {
-      alert("NO SE CREO LA RECETA");
-    }
-  }, [creacion, navegacionAutomatica]);
-
-  const [nuevoGame, setNuevoGame] = useState({
-    nombre: "",
-    descripcion: "",
-    rating: 0,
-    imagen: "",
-    generos: [],
-    plataformas: [],
+  const [input, setInput] = useState({
+    name: "",
+    image: "",
+    description: "",
+    released: "",
+    rating: "",
+    genres: [],
+    platforms: []
   });
 
-  const manipuladorInput = (e) => {
-    setNuevoGame({
-      ...nuevoGame,
-      [e.target.name]: e.target.value,
-    });
-    setValidador(
-      validacion({
-        ...nuevoGame,
-        [e.target.name]: e.target.value,
-      })
-    );
-  };
+  const [errors, setErrors] = useState({}); //me creo un estado local, en donde errors = {}
+  
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const manipuladorGame = (e) => {
-    const selec = nuevoGame.generos.filter(
-      (elemento) => elemento !== e.target.innerHTML
-    );
-    console.log("ACA ESTA SETNUEVOGAME ", selec);
-    if (selec.includes(e.target.value)) {
-      alert("YA HA ELEGIDO ESTA DIETA");
-    } else {
-      setNuevoGame({
-        ...nuevoGame,
-        generos: [...nuevoGame.generos, e.target.value],
-      });
-      setValidador(
-        validacion({
-          ...nuevoGame,
-          generos: [...nuevoGame.generos, e.target.value],
-        })
-      );
-    }
-    console.log("aca esta Nuevo Game ", nuevoGame.genre);
-  };
+  const generos = useSelector((state) => state.genres);
+  const plataformas = useSelector(state => state.platforms);
+  const allNames = useSelector(state => state.videogames)
 
-  const eliminarGeneros = (e) => {
-    const seleccion = nuevoGame.generos.filter(
-      (elemento) => elemento !== e.target.innerHTML
-    );
-
-    setNuevoGame({
-      ...nuevoGame,
-      generos: seleccion,
-    });
-
-    setValidador(
-      validacion({
-        ...nuevoGame,
-        generos: [...seleccion],
-      })
-    );
-  };
-
-  const manipuladorDeCreacion = (e) => {
+  
+  useEffect(() => {
+    dispatch(getGenres());
+    dispatch(getPlatforms());
+    dispatch(getVideogame());
+  }, [dispatch])
+  
+  function handleSubmit(e) {
     e.preventDefault();
-    if (Object.keys(validador).length) {
-      alert("TODOS LOS CAMPOS DEBEN ESTAR COMPLETOS");
+    let noRepeat = allNames.filter(n => n.name === input.name)
+    if(noRepeat.length !== 0) {
+      alert('Ya existe un juego con ese nombre, por favor elija otro')
     } else {
-      if (Object.keys(validacion(nuevoGame)).length) {
-        alert("LOS CAMPOS NO PUEDEN ESTAR VACIOS");
-      } else {
-        formularioDeCreacion(nuevoGame)
-          .then(() => {
-            setCreacion("creada");
-          })
-          .catch(() => {
-            setCreacion("noCreada");
+        let error = Object.keys(validate(input)) 
+        if(error.length !== 0 || !input.genres.length || !input.platforms.length) {
+          alert('Llene los campos correctamente')
+          return
+        } else {
+          formularioDeCreacion(input);
+          setInput({
+            name: "",
+            image: "",
+            description: "",
+            released: "",
+            rating: "",
+            genres: [],
+            platforms: [],
           });
-      }
+          console.log(input);
+          alert("Felicidades, el juego fue creado exitosamente.");
+        }
+        navigate('/home')
+
     }
-  };
+  }
 
-  const validacion = (nuevoGame) => {
-    let validar = {};
-    let noContieneNumero = /[1-9]/;
-    let sinEspacios = /[\s]/;
+  function handleChange(e) {
+    e.preventDefault();
+    setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setErrors(validate({
+      ...input,
+      [e.target.name]: [e.target.value]
+    })
+    )
+  }
 
-    if (nuevoGame.nombre.length > 50)
-      validar.nombre = "NO PUEDE TENER MAS DE 50 CARACTERES";
-    if (nuevoGame.nombre.length < 5)
-      validar.nombre = "NECESITA TENER UN MINIMO DE 5 CARACTERES";
-    if (sinEspacios.test(nuevoGame.nombre[0]))
-      validar.nombre = "NO PUEDE CONTENER ESPACIOS";
-    if (noContieneNumero.test(nuevoGame.nombre))
-      validar.nombre = "NO PUEDE CONTENER NUMEROS";
-    if (
-      games.find(
-        (elemento) =>
-          elemento.name.toUpperCase() === nuevoGame.name.toUpperCase()
-      )
-    ) {
-      const gameExistente = games.find(
-        (elemento) =>
-          elemento.name.toUpperCase() === nuevoGame.name.toUpperCase()
-      );
-      validar.nombre = (
-        <Link to={`/detalle/${gameExistente.id}`}>
-          YA TENEMOS ESTA RECETA EN NUESTRA BASE DE DATOS{" "}
-          {gameExistente.name}
-        </Link>
-      );
+  function handleGenres(e) {
+    if(!input.genres.includes(e.target.value)) {
+      setInput({
+        ...input,
+        genres: [...input.genres, e.target.value],
+      })
     }
+  }
 
-    if (nuevoGame.descripcion.length > 100)
-      validar.descripcion = "NO PUEDE TENER MAS DE 100 CARACTERES";
-    if (nuevoGame.descripcion.length < 30)
-      validar.descripcion = "NECESITA TENER UN MINIMO DE 30 CARACTERES";
-    if (sinEspacios.test(nuevoGame.descripcion[0]))
-      validar.descripcion = "NO PUEDE SER ESPACIOS EN BLANCO";
-
-    if (nuevoGame.pasoApaso.length > 200)
-      validar.pasoApaso = "NO PUEDE TENER MAS DE 100 CARACTERES";
-    if (nuevoGame.pasoApaso.length < 20)
-      validar.pasoApaso = "NECESITA TENER UN MINIMO DE 30 CARACTERES";
-    if (sinEspacios.test(nuevoGame.pasoApaso[0]))
-      validar.pasoApaso = "NO PUEDE SER ESPACIOS EN BLANCO";
-
-    if (Number(nuevoGame.rating) < 1)
-      validar.rating = "TIENE QUE SER UN PUNTAJE MAYOR A 1 ";
-    if (Number(nuevoGame.rating) > 100)
-      validar.rating = "NO PUEDE SER MAYOR A 100";
-
-    if (!nuevoGame.imagen) {
-      validar.imagen = "IMAGEN ES REQUERIDA";
-    } else if (
-      !/(?:(?:https?:\/\/))[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/=]*(\.jpg|\.png|\.jpeg|\.webp))/.test(
-        nuevoGame.imagen
-      )
-    ) {
-      validar.imagen = "INGRESE UNA URL VALIDA";
+  function handlePlatforms(e) {
+    if(!input.platforms.includes(e.target.value)) {
+      setInput({
+        ...input,
+        platforms: [...input.platforms, e.target.value]
+      })
     }
+  }
 
-    if (nuevoGame.generos.length === 0)
-      validar.generos = "DEBE CONTENER AL MENOS UN GENERO";
+  function handleDeleteG(e) {
+    setInput({
+      ...input,
+      genres: input.genres.filter((gen) => gen !== e)
+    });
+  }
 
-    return validar;
-  };
+  function handleDeleteP(e) {
+    setInput({
+      ...input,
+      platforms: input.platforms.filter((plat) => plat !== e)
+    });
+  }
 
   return (
-    <div>Create</div>
-  )
+    <div>
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <div >
+          <h2 >CREA TU PROPIO VIDEOJUEGO</h2>
+
+          <div >
+            <label >Nombre: </label>
+            <input
+              type="text"
+              required
+              name="name"
+              value={input.name}
+              onChange={(e) => handleChange(e)}
+              /> <span ></span>
+            {errors.name && (
+              <p >{errors.name}</p>
+            )}
+          </div>
+
+
+          <div >
+            <label >Imagen URL: </label>
+            <input
+              type="text"
+              name="image"
+              value={input.image}
+              onChange={(e) => handleChange(e)}
+              /> <span ></span>
+            {errors.image && (
+              <p >{errors.image}</p>
+            )}
+          </div>
+
+
+          <div >
+            <label >Fecha de lanzamiento: </label>
+            <input
+              required
+              type='date'
+              name="released"
+              value={input.released}
+              placeholder='yyyy-mm-dd'
+              onChange={(e) => handleChange(e)}
+              /> <span></span>
+            {errors.released && (
+              <p >{errors.released}</p>
+            )}
+
+          </div>
+
+          <div >
+            <label >Rating: </label>
+            <input
+              required
+              type="number"
+              name="rating"
+              value={input.rating}
+              onChange={(e) => handleChange(e)}
+              /> <span ></span>
+            {errors.rating && (
+              <p >{errors.rating}</p>
+            )}
+          </div>
+
+          <div >
+            <label >Generos: </label>
+            <select id="genres" defaultValue="" onChange={(e) => handleGenres(e)}>
+              <option value='' disabled hidden>Elija los géneros...</option>
+              {generos.map((g) => {
+                return (
+                  <option key={g.id} value={g.name}>{g.name}</option>
+                  );
+                })}
+            </select> <span ></span>
+            {input.genres.map((g) => (
+              <div >
+                <div >{g}</div>
+                <button onClick={() => handleDeleteG(g)} key={g} value={g}><span >X</span></button>
+              </div>
+        ))}
+          </div>
+
+           <div >
+              <label >Plataformas:  </label>
+              <select id="platforms" defaultValue="" onChange={(e) => handlePlatforms(e)}>
+                  <option value="" disabled hidden>Elija las plataformas...</option>
+                  {plataformas?.map(p => {
+                    return (
+                      <option value={p.name} key={p.id}>{p.name}</option>
+                      );
+                    })}
+              </select> <span ></span>
+              {input.platforms.map((p) => (
+                <div >
+                  <div >{p}</div>
+                  <button onClick={() => handleDeleteP(p)} key={p} value={p}><span >X</span></button>
+                </div>
+              ))}
+          </div> 
+
+          <div >
+            <label >Descripcion: </label>
+            <textarea
+              required
+              type="text"
+              name="description"
+              value={input.description}
+              onChange={(e) => handleChange(e)}
+              > </textarea>
+            {errors.description && (
+              <p >{errors.description}</p>
+            )}
+          </div>
+      </div>
+      <div>
+          <button type="submit">CREAR VIDEOJUEGO</button>
+      </div>
+      <div >
+          <Link to={'/home'} >
+            <button>Cancelar</button>
+            </Link>
+      </div>
+      </form>
+
+    </div>
+  );
 }
 
 export default Create

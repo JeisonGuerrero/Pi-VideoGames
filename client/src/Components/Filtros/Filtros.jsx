@@ -28,6 +28,7 @@ function Filtros({ setPaginaEnEsteMomento }) {
       let valor = e.target.value;
       if (valor === 'Todos') {
         dispatch(getVideogame());
+        setPaginaEnEsteMomento(1);
       } else {
         dispatch(filtroGames(valor));
         setPaginaEnEsteMomento(1);
@@ -39,6 +40,7 @@ function Filtros({ setPaginaEnEsteMomento }) {
       let valor = e.target.value;
       if (valor === 'Todos') {
         dispatch(getVideogame());
+        setPaginaEnEsteMomento(1);
       } else {
         dispatch(filtroGenres(valor));
         setPaginaEnEsteMomento(1);
@@ -50,6 +52,7 @@ function Filtros({ setPaginaEnEsteMomento }) {
       let valor = e.target.value;
       if (valor === 'Todos') {
         dispatch(getVideogame());
+        setPaginaEnEsteMomento(1);
       } else {
         dispatch(ordenAlfabetico(valor));
         setPaginaEnEsteMomento(1);
@@ -61,6 +64,7 @@ function Filtros({ setPaginaEnEsteMomento }) {
       let valor = e.target.value;
       if (valor === 'Todos') {
         dispatch(getVideogame());
+        setPaginaEnEsteMomento(1);
       } else {
         dispatch(ordenPorPuntaje(valor));
         setPaginaEnEsteMomento(1)

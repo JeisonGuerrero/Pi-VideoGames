@@ -28,6 +28,20 @@ export const getGenres = () => {
     }
 };
 
+export const getPlatforms = () => {
+  return async (dispatch) => {
+    try {
+      let rutaPlatforms = await axios ('http://localhost:3001/platform');
+      return dispatch ({
+        type: 'GET_PLATFORMS',
+        payload: rutaPlatforms.data
+      });
+    } catch (error) {
+      console.log("ERROR EN LA LLAMADA AL BACK A LA RUTA PLATFORMS ", error);
+    }
+  };
+};
+
 export function getByIdVideogames(id) {
     return async (dispatch) => {
       try {
@@ -106,6 +120,6 @@ export const formularioDeCreacion = async (payload) => {
       );
       return crearGame;
     } catch (error) {
-      console.log("ERROR EN LA RUTA DE CREACION ", error);
+      console.log(error);
     }
 }

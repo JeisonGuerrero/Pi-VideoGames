@@ -19,15 +19,15 @@ function Home() {
     dispatch(getVideogame()).then(() => setCarga(false));
   }, [dispatch]);
 
-  
+
   const allVideogames = useSelector((state) => state.videogames);
-  
+
   const [paginaEnEsteMomento, setPaginaEnEsteMomento] = useState(1);
   const cantidadPorPagina = 16;
   const indiceUno = paginaEnEsteMomento * cantidadPorPagina;
   const ultimoIndice = indiceUno - cantidadPorPagina;
   const listaDeGames = allVideogames.slice(ultimoIndice, indiceUno);
-  
+
   React.useEffect(() => {
     window.scrollTo(0, 0);
 }, [cantidadPorPagina]);

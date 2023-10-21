@@ -11,7 +11,7 @@ function Cards({ videogames }) {
                 <Card 
                     name={e.name} 
                     image={e.image} 
-                    genres={e.genres}  
+                    genres={e.genres?.map(e => typeof (e) === 'object' ? e.name : e)}  
                     id={e.id}
                     rating={e.rating}
                     />

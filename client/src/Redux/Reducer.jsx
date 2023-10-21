@@ -1,6 +1,7 @@
 const initialState = {
     videogames: [],
     genres: [],
+    platforms: [],
     unVideogame: {},
     gameModificable: [],
     gameCreate: 'Inicial'
@@ -20,6 +21,12 @@ function reducer(state = initialState, { type, payload }) {
           ...state,
           genres: payload,
         };
+
+      case "GET_PLATFORMS":
+        return {
+          ...state,
+          platforms: payload,
+        };
   
       case "VIDEOGAMES_BY_ID":
         return {
@@ -36,14 +43,10 @@ function reducer(state = initialState, { type, payload }) {
       case "FILTRO_GENRES":
         const listaVideoGames = [...state.videogames];
         let listaGn;
-        if (payload === 'Todos') {
-          listaGn = listaVideoGames;
-        }else{
           const aux = listaVideoGames.filter( (e) => e.genres?.filter( (e) => e === payload).length)
           listaGn = aux.length ? aux : listaVideoGames;
             if(!aux.length) {
               alert("No existen juegos con este genero")
-            }
         }
         return {
           ...state,
@@ -59,7 +62,7 @@ function reducer(state = initialState, { type, payload }) {
         const auxiliar =
           payload === "origenDb"
             ? todosLosGames.filter(
-                (game) => game.id.toString().length < 3
+                (game) => game.id.toString().length < 2
               )
             : payload === "origenApi" 
           ? todosLosGames.filter(

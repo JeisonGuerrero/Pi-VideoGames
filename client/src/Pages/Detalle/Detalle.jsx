@@ -20,28 +20,36 @@ function Detalle() {
   }, [dispatch, id]);
   return (
     <div>
-        <div className='contenedor'>
+        <div className='contenedorPadreDetalle'>
           <div className='contenedorDetalle'>
-            <img className='img' src={unGame.image} alt={unGame.name} />
-            <h2>{unGame.name}</h2>
-            <h3 className='span'>Generos:</h3>
-            <span >
-              {unGame.genres?.map((e) => <p className= 'Gnr'>{e} </p>)}
+            <div className='contenedorImgPadre'>
+              <div className='contenedorImgHijo'>
+                <img className='img' src={unGame.image} alt={unGame.name} />
+              </div>
+            </div>
+            <div className='contenedorText'>
+              <h2>{unGame.name}</h2>
+              <h3 className='span'>Generos:</h3>
+              <span >
+                {unGame.genres?.map((e) => typeof (e) === 'object' ? <p className= 'Gnr'>{e.name} </p> : <p className= 'Gnr'>{e} </p>) } 
 
-            </span>
-            <h3 className='span'>Descripción:</h3>
-            <p>{unGame.description}</p>
-            <h3 className='span'>Fecha de lanzamiento:</h3>
-            <p>{unGame.released}</p>
-            <h3 className='span'>Rating:</h3>
-            <p>{unGame.rating}</p>
-            <h3 className='span'>Plataformas:</h3>
-            <p>{unGame.platforms?.map((e) => 
-              <p className= 'Gnr'>{e} </p>
-              )}</p>
-            <Link to='/home'>
-              <button className="Btn-Back"> Volver </button>
-            </Link>
+              </span>
+              <h3 className='span'>Descripción:</h3>
+              <p>{unGame.description}</p>
+              <h3 className='span'>Fecha de lanzamiento:</h3>
+              <p>{unGame.released}</p>
+              <h3 className='span'>Rating:</h3>
+              <p>{unGame.rating}</p>
+              <h3 className='span'>Plataformas:</h3>
+              <p>{unGame.plataforms?.map((e) => 
+                <p className= 'Gnr'>{e} </p>
+                )}</p>
+            </div>
+            <div className='contenedorBtn'>
+              <Link to='/home'>
+                <button className="Btn-Back"> Volver </button>
+              </Link>
+            </div>
           </div>
         </div>
     </div>
