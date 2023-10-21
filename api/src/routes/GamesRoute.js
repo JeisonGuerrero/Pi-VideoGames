@@ -18,7 +18,7 @@ routes.get('/', async (req, res) => {
             allResults.length ? res.status(200).send(allResults.slice(0,15)) : res.status(400).send('Videogame not found')
 
         } catch(err) {
-            next(err)
+            console.error(err)
         }
     }
     else {
@@ -34,11 +34,10 @@ routes.get('/:id', async (req, res) => {
     let data = await videogameId(id)
 
     try {
-        //const getById = await data.(i => i.id == idVideogame)
         data ? res.send(data) : res.status(404).send('El id ingresado no coincide con un videojuego en particular')
 
-    } catch(e) {
-        next(e)
+    } catch(error) {
+        console.log(error);
     }
 
 });

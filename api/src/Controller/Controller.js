@@ -6,11 +6,10 @@ const infoApi = async() => {
     let url = `https://api.rawg.io/api/games?key=${API_KEY}`
     let videojuegos = []
     try {
-        for(let i=0; i<5; i++) { //con un for recorro mi API, ya que es un arreglo, 5 veces
-            const info = await axios(url) //realizo la peticion
-            //en mi .data podemos encontrar dos propiedades, results que es es aquello que voy a mapear            
-            info.data.results.map(v => { //a la respuesta/resultado lo mapeo
-                videojuegos.push({ //y pusheo en mi array vacio todo aquello que mapee
+        for(let i=0; i<5; i++) {
+            const info = await axios(url) 
+            info.data.results.map(v => { 
+                videojuegos.push({ 
                     id: v.id,
                     name: v.name,
                     image: v.background_image,
@@ -42,7 +41,7 @@ const infoDB = async () => {
             }]
         })
     } catch(e) {
-        console.error(e)
+        console.log(e)
     }
 }
 
@@ -122,20 +121,20 @@ const idDb = async (id) => {
         }]
        })
     } catch(e) {
-        console.error(e)
+        console.log(e)
     }
 }
 
 //UNO MIS DOS SOLICITUDES
 const videogameId = async (id) => {
-    const dbID = id.includes("-")
-    if(dbID) { 
         const gameDb = await idDb(id);
-        return gameDb     
-    } else {
-        const gameApi = await idApi(id);
-        return gameApi
-   }
+        if(!gameDb){
+            const gameApi = await idApi(id);
+            console.log(gameApi)
+            return gameApi;
+        } else {
+            return gameDb;
+        }
 }
 
 
@@ -165,11 +164,25 @@ const getGenres = async () => {
 
 };
 
+const getPlatforms = async () => {
+    const promise = await axios (`https://api.rawg.io/api/platforms?key=${API_KEY}`);
+    const platforms = promise.data.results.map((ele) => {
+        return {
+            id: ele.id,
+            name: ele.name,
+        }
+    });
+
+    return platforms
+
+};
+
 
 module.exports = {
     getByName,
     videogameId,
     getGenres,
     getVideogames,
-    infoDB
+    infoDB,
+    getPlatforms,
 }
